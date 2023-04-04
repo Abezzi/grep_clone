@@ -5,13 +5,25 @@ fn main() {
     // when we use collect we need to specify the type of the receiver variable
     let args: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let file_path = &args[2];
+    let config = parse_config(&args);
 
-    println!("searching for: {query}");
-    println!("in file: {file_path}");
+    println!("searching for: {}", config.query);
+    println!("in file: {}", config.file_path);
 
-    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let contents =
+        fs::read_to_string(config.file_path).expect("Should have been able to read the file");
 
     println!("content of the file: {contents}");
+}
+
+struct Config {
+    query: String,
+    file_path: String,
+}
+
+fn parse_config(args: &[String]) -> Config {
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+
+    Config { query, file_path }
 }
