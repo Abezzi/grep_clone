@@ -1,4 +1,5 @@
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::process;
 
@@ -6,6 +7,7 @@ fn main() {
     // when we use collect we need to specify the type of the receiver variable
     let args: Vec<String> = env::args().collect();
 
+    // store the configuration and handle errors
     let config = Config::build(&args).unwrap_or_else(|err| {
         println!("Problem parsing argument: {err}");
         process::exit(1);
@@ -14,13 +16,18 @@ fn main() {
     println!("searching for: {}", config.query);
     println!("in file: {}", config.file_path);
 
-    run(config)
+    if let Err(e) = run(config) {
+        println!("Applicattion error: {e}");
+        process::exit(1);
+    }
 }
 
-fn run(config: Config) {
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents =
         fs::read_to_string(config.file_path).expect("Should have been able to read the file");
     println!("content of the file: {contents}");
+
+    Ok(())
 }
 
 impl Config {
