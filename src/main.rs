@@ -12,7 +12,7 @@ fn main() {
         process::exit(1);
     });
 
-    println!("searching for: {}", config.query);
+    // println!("searching for: {}", config.query);
 
     if let Err(e) = grep_clone::run(config) {
         println!("Applicattion error: {e}");
